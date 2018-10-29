@@ -1,0 +1,55 @@
+/*!
+ * Start Bootstrap - Heroic Features (https://startbootstrap.com/template-overviews/heroic-features)
+ * Copyright 2013-2017 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-heroic-features/blob/master/LICENSE)
+ */
+
+body {
+  padding-top: 54px;
+}
+
+@media (min-width: 992px) {
+  body {
+    padding-top: 56px;
+  }
+}
+
+.card {
+  height: 100%;
+}
+
+.display-5 {
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1.2;
+}
+
+.plans {
+  text-align: center;
+  font-size: 0.6em;
+}
+
+.jumbotron {
+  padding: 0.5em 0.5em;
+}
+
+.adding-cat {
+  margin: 1em 0;
+}
+
+.profile-photo {
+  padding: 0 0 0 0.2em;
+}
+
+.username {
+  color: #71a2d8;
+}
+
+.tap {
+  margin: 0 0 0 1em;
+}
+
+.flashes {
+  margin-top: 2em;
+  text-align: center;
+}
