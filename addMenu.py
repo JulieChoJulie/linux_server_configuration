@@ -3,6 +3,8 @@ from sqlalchemy.orm import sessionmaker
 
 from database_setup import Base, User, Category, Menu, Ingredient, Direction
 import json
+import psycopg2
+
 # engine = create_engine('sqlite:///recipes.db')
 engine = create_engine('postgresql://grader:whguswn@localhost/recipes')
 

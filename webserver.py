@@ -33,6 +33,7 @@ from functools import wraps
 
 
 from datetime import timedelta
+import psycopg2
 
 app = Flask(__name__)
 
@@ -367,7 +368,7 @@ def newMenu(category_id):
             for i in range(0, len(descriptions)):
                 description = descriptions[i]
                 amt = amount[i]
-                amt = amt.encode("utf-8")
+                # amt = amt.encode("utf-8")
                 description = description.replace('\u00b0', '')
                 description = description.replace('\u00a0', '')
                 # If the description is empty while amt is filled
@@ -593,7 +594,7 @@ def editMenu(category_id, menu_id):
         for i in range(0, len(descriptions)):
             description = descriptions[i]
             amt = amount[i]
-            amt = amt.encode("utf-8")
+            # amt = amt.encode("utf-8")
             description = description.replace('\u00b0', '')
             description = description.replace('\u00a0', '')
             # If the description is empty while amt is filled

@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from passlib.apps import custom_app_context as pwd_context
 import random
 import string
+import psycopg2
 
 Base = declarative_base()
 secret_key = ''.join(random.choice(
@@ -39,7 +40,7 @@ class Ingredient(Base):
 class Direction(Base):
     __tablename__ = 'direction'
     id = Column(Integer, primary_key=True)
-    direction = Column(String(350))
+    direction = Column(String(850))
     menu_id = Column(Integer, ForeignKey('menu.id'))
 
     @property

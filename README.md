@@ -84,8 +84,35 @@ sudo nano /var/www/recipes/client_secrets.json
 => place client_secrets.json
 
 
+we also need to move app.secret_key outside of if name == 'main':
 
 
+
+google colud platform
+Authorised JavaScript origins
+http://ec2-34-238-165-67.compute-1.amazonaws.com
+
+
+
+
+scp -P 2200 -i /Users/Hyeonjoo/.ssh/linuxProject -r ./Project grader@ec2-34-238-165-67.compute-1.amazonaws.com:~/
+
+
+
+sudo mv Part5-Project /var/www/recipes/
+
+pip install pipreqs
+> export PATH=$PATH:~/.local/bin is in your ~/.bashrc file.
+source ~/.bashrc
+
+pwd: /var/www/recipes
+pipreqs Part5-Project/
+
+confirm
+cat Part5-Project/requirements.txt
+
+cd Part5-Project/
+pip install -r requirements.txt 
 
 
 
