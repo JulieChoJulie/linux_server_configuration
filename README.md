@@ -1,119 +1,204 @@
-# linux_server_configuration
+# Linux Server Configuration
+I took a baseline installation of a Linux server and prepare it to host my web applications. I secured your server from a number of attack vectors, install and configure a database server, and deploy one of my existing web applications onto it.
 
-chmod 400 /Users/hyeonjoo/Downloads/hj_linuxProject.pem
-ssh -i ~/Downloads/hj_linuxProject.pem ubuntu@ec2-34-237-245-201.compute-1.amazonaws.com
-
-sudo apt-get update
-sudo apt-get upgrade
-
-sudo nano /etc/ssh/sshd_config
-change 22 - > 2200
-uncomment
-
-sudo service ssh restart
-
-sudo timedatectl set-timezone UTC
-
-sudo ufw status
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-
-sudo ufw allow 2200/tcp  
-sudo ufw allow 123/tcp
-sudo ufw allow 80/tcp
-sudo ufw enable
-sudo ufw status
+ip address: 18.233.226.44
+ssh port: 2200
+url: http://18.233.226.44.xip.io/recipes/
 
 
-sudo adduser grader
-
-sudo nano /etc/sudoers.d/grader
-
-grader ALL=(ALL) NOPASSWD:ALL
+## What I learned
+* I learned how to access, secure, and perform the initial configuration of a bare-bones Linux server. 
+* I learned how to install and configure a web and database server and actually host a web application.
 
 
-su - grader
-
-(on local machine)
-ssh-keygen
-/Users/Hyeonjoo/.ssh/linuxProject
-cat .ssh/linuxProject.pub
-
-copy the contetn
+## A List of Third-Party Resources 
+* Amazon AWS EC2
+* Google Cloud API (for OAuth authentication)
+* Scrapy Crawler
 
 
+## Summary of Softwares
+* flask
+* sqlalchemy
+* apache2
+* postgresql
+* virtuallenv
+* pip
+* python
 
-mkdir .ssh
-touch .ssh/authorized_keys
-nano .ssh/authorized_keys
+## Instructions
 
-upload key pub on Amazon AWS
+#### Launch a ubuntu instance of Amazon EC2
+- Create an account or Sign in on Amazon AWS website.
+- Launch a ubuntu instance of Amazon EC2 and create a new key pair and download it on your local machine.
+- Set inbound rules for port 2200, 123, and 80.
 
+#### Secure your server
+- After log into the server, update the packages
+```
+$ sudo apt-get update
+$ sudo apt-get upgrade
+```
 
-chmod 700 .ssh
-chmod 644 .ssh/authorized_keys
+- Change the SSH port from 22 to 2200. Make sure to configure the EC2 firewall to allow it.
+```
+$ sudo nano /etc/ssh/sshd_config 
+	* Change 22 -> 2200 and uncomment it. 
+$ sudo service ssh restart	
+```
+	* Change 22 -> 2200 and uncomment it. 
 
-sudo nano /etc/ssh/sshd_config
--> check if PasswordAuthentication no
+- Configure the Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123).
+```
+$sudo ufw status
+$sudo ufw default deny incoming
+$sudo ufw default allow outgoing
 
-sudo service ssh restart
+$sudo ufw allow 2200/tcp  
+$sudo ufw allow 123/tcp
+$sudo ufw allow 80/tcp
+$sudo ufw enable
+$sudo ufw status
+```
 
-ssh grader@ec2-34-238-165-67.compute-1.amazonaws.com -i ~/.ssh/linuxProject -p 2200
+#### Give the user **grader** access
+- Create a new user account named **grader**.
+`$ sudo adduser grader`
+- Give grader the permission to sudo.
+`$ sudo nano /etc/sudoers.d/grader`
+	* and write like this below: 
+		=> grader ALL=(ALL) NOPASSWD:ALL
+- Create an SSH key pair for grader using the ssh-keygen tool.
+	* On your local machine, 
+	`$ ssh-keygen`
+	* Open the public key and copy it.
+	`$ cat .ssh/linuxProject.pub`
+	* Go back to your server,
+	```
+	$ su - grader
+	$ mkdir .ssh
+	$ touch .ssh/authorized_keys
+	$ nano .ssh/authorized_keys
+	$ chmod 700 .ssh
+	$ chmod 644 .ssh/authorized_keys
+ 	$ sudo nano /etc/ssh/sshd_config
+	-> change from PasswordAuthentication yes to PasswordAuthentication no
+	$ sudo service ssh restart
+	```
 
+#### Prepare to deploy your project.
+- Configure the local timezone to UTC.
+`sudo timedatectl set-timezone UTC`
 
+- Install packages we need for this project
+```
+$ sudo apt-get install python-pip
+$ sudo apt-get install apache2
+$ sudo apt-get install libapache2-mod-wsgi
+$ sudo pip install flask
+```
 
-sudo apt-get install apache2
+- Install and configure PostgreSQL.
+```
+$ sudo apt-get install postgresql
 
-sudo apt-get install libapache2-mod-wsgi
-
-sudo apt-get install postgresql
-
-sudo -u postgres psql
+$ sudo -u postgres psql
 
 => CREATE ROLE grader WITH LOGIN PASSWORD 'whguswn';
-=> CREATE DATABASE recipes;
+=> CREATE DATABASE catalog;
 => \q
+```
 
-Change to 
-engine = create_engine('postgresql://grader:whguswn@localhost/recipes')
+#### Deploy the Item Catalog project
+- Locate google API client secrets JSON file in /var/www/html/flaskapp directory.
+```
+$mkdir ~/flaskapp
+$sudo ln -sT ~/flaskapp /var/www/html/flaskapp 
+$ scp -P 2200 -i /Users/Hyeonjoo/.ssh/linuxProject -r ./client_secrets.json grader@ec2-18-233-226-44.compute-1.amazonaws.com:~/
+$ sudo mv client_secrets.json ~/flaskapp/
+```
+- Clone and setup your Item Catalog project from the Github repository.
+```
+$ git clone https://github.com/JulieChoJulie/linux_server_configuration.git
+$ cd ~/linux_server_configuration
+$ sudo mv * ~/flaskapp
+$ sudo chmod 777 flaskapp
+$ mv ~/flaskapp/webserver.py ~/flaskapp/flaskapp.py
+```
+
+
+- Change database management systems from SQLite to postgreSQL in python files.
+```
+Add
+import psycopg2
+and Change to 
+engine = create_engine('postgresql://grader:whguswn@localhost/catelog')
 in database_setup.py, webserver.py, and addMenu.py
+```
 
-sudo mkdir /var/www/recipes
-sudo touch /var/www/recipes/client_secrets.json
-sudo nano /var/www/recipes/client_secrets.json
-=> place client_secrets.json
-
-
-we also need to move app.secret_key outside of if name == 'main':
-
-
-
-google colud platform
-Authorised JavaScript origins
-http://ec2-34-238-165-67.compute-1.amazonaws.com
-
-
-
-
-scp -P 2200 -i /Users/Hyeonjoo/.ssh/linuxProject -r ./Project grader@ec2-34-238-165-67.compute-1.amazonaws.com:~/
-
-
-
-sudo mv Part5-Project /var/www/recipes/
-
-pip install pipreqs
+- Set up virtualenv and get requirements.txt file.
+```
+$ pip install pipreqs
 > export PATH=$PATH:~/.local/bin is in your ~/.bashrc file.
-source ~/.bashrc
+$ source ~/.bashrc
 
-pwd: /var/www/recipes
-pipreqs Part5-Project/
+$ cd ~/
+$ pipreqs flaskapp/
 
-confirm
-cat Part5-Project/requirements.txt
+$ sudo pip install virtualenv
+$ cd ~/flaskapp
+$ virtualenv -p python venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
 
-cd Part5-Project/
-pip install -r requirements.txt 
+$ pip install --upgrade oauth2client 
+$ pip install psycopg2-binary
+$ deactivate
+```
+
+- Create .msgi file and paste the content below. 
+`$ sudo nano ~/flaskapp/flaskapp.msgi`
+Content:
+```
+	import sys
+	sys.path.insert(0, '/var/www/html/flaskapp')
+	#activate_this is for activate the packages for virtual environment
+	activate_this = '/var/www/html/flaskapp/venv/bin/activate_this.py'
+	execfile(activate_this, dict(__file__=activate_this))
+	from flaskapp import app as application
+```	
+- Create a configuration file for hosting our web application.
+`$ sudo nano /etc/apache2/sites-available/flaskapp.conf`
+Paste the content below.
+```
+	<VirtualHost *:80>
+	  ServerName ubuntu
+	  ServerAlias 18.233.226.44
+	  ServerAdmin local@local
+	  WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi
+	  <Directory /var/www/html/flaskapp/>
+	      Order allow,deny
+	      Allow from all
+	  </Directory>
+	 Alias /static /var/www/html/flaskapp/static
+	  <Directory /var/www/html/flaskapp/static/>
+	      Order allow,deny
+	      Allow from all
+	  </Directory>
+	  ErrorLog ${APACHE_LOG_DIR}/error.log
+	  CustomLog ${APACHE_LOG_DIR}/access.log combined
+	</VirtualHost>
+```
+- Enable our virtual host for our web application
+`sudo a2ensite flaskapp`
+- Restart apache.
+`sudo apache2ctl restart`
 
 
+## Acknowldgement
+	Udacity - Full Stack Web Developer NanoDegree Program
+	Icons made by Freepik from www.flaticon.com 
+    Icon made by Those Icons from www.flaticon.com 
+    Icon made by Smashicons from www.flaticon.com 
 
 

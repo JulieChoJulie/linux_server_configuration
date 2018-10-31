@@ -25,7 +25,7 @@ class Ingredient(Base):
     __tablename__ = 'ingredient'
     id = Column(Integer, primary_key=True)
     amount = Column(String(50))
-    description = Column(String(80))
+    description = Column(String(280))
     menu_id = Column(Integer, ForeignKey('menu.id'))
 
     @property

@@ -38,7 +38,7 @@ import psycopg2
 app = Flask(__name__)
 
 # Store google client id
-CLIENT_ID = json.loads(open('client_secrets.json', 'r')
+CLIENT_ID = json.loads(open('/var/www/html/flaskapp/client_secrets.json', 'r')
                        .read())['web']['client_id']
 
 # engine = create_engine('sqlite:///recipes.db?check_same_thread=False')
@@ -171,7 +171,7 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object using
         # one-time-code.
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('/var/www/html/flaskapp/client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
