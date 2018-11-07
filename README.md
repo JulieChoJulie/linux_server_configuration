@@ -1,9 +1,9 @@
 # Linux Server Configuration
 I took a baseline installation of a Linux server and prepare it to host my web applications. I secured your server from a number of attack vectors, install and configure a database server, and deploy one of my existing web applications onto it.
 
-ip address: 18.233.226.44
-ssh port: 2200
-url: http://18.233.226.44.xip.io/recipes/
+ip address: 18.233.226.44<br />
+ssh port: 2200<br />
+url: http://18.233.226.44.xip.io/recipes/<br />
 
 
 ## What I learned
@@ -87,7 +87,7 @@ $sudo ufw status
 	```
 
 #### Prepare to deploy your project.
-- Configure the local timezone to UTC.
+- Configure the local timezone to UTC.  
 `sudo timedatectl set-timezone UTC`
 
 - Install packages we need for this project
@@ -156,7 +156,7 @@ $ pip install psycopg2-binary
 $ deactivate
 ```
 
-- Create .msgi file and paste the content below. 
+- Create .msgi file and paste the content below.  
 `$ sudo nano ~/flaskapp/flaskapp.msgi`
 Content:
 ```
@@ -189,9 +189,9 @@ Paste the content below.
 	  CustomLog ${APACHE_LOG_DIR}/access.log combined
 	</VirtualHost>
 ```
-- Enable our virtual host for our web application
+- Enable our virtual host for our web application  
 `sudo a2ensite flaskapp`
-- Restart apache.
+- Restart apache.  
 `sudo apache2ctl restart`
 
 
@@ -200,5 +200,6 @@ Paste the content below.
 	Icons made by Freepik from www.flaticon.com 
     Icon made by Those Icons from www.flaticon.com 
     Icon made by Smashicons from www.flaticon.com 
+    https://www.webtunix.com/blog/run-flask-app-on-AWS-EC2
 
 
